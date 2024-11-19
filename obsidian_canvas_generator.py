@@ -108,9 +108,6 @@ def main():
 
     window.close()
 
-if __name__ == "__main__":
-    main()
-
 def download_source():
     response = requests.get("https://raw.githubusercontent.com/Scavix/links-to-obsidian-canvas/main/obsidian_canvas_generator.py")
     if response.status_code == 200:
@@ -142,3 +139,7 @@ def download_both():
         if res2:
             os.remove("auto_updater_build_script.bat")
         return False
+    
+
+if __name__ == "__main__":
+    main()
