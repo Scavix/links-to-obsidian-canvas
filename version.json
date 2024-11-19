@@ -1,0 +1,15 @@
+{
+    "name": "Obsidian Canvas Generator",
+    "version": "1.0.0",
+    "description": "Just a links list to obsidian canvas translator",
+    "author": "Scavix",
+    "license": "MIT",
+    "homepage": "https://github.com/Scavix/links-to-obsidian-canvas",
+    "bugs": {
+      "url": "https://github.com/Scavix/links-to-obsidian-canvas/issues"
+    },
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/Scavix/links-to-obsidian-canvas.git"
+    }
+  }
