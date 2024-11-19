@@ -2,6 +2,7 @@ import PySimpleGUI as sg
 import json
 import os
 import requests
+import subprocess
 
 version = "1.0.0"
 
@@ -71,7 +72,27 @@ def main():
                 sg.popup("Done")
             else:
                 sg.popup("Web site does not exist or is not reachable")
-        
+    
+        elif event == 'Check update':
+            response = requests.get("https://raw.githubusercontent.com/Scavix/links-to-obsidian-canvas/main/version.json")
+            if response.status_code == 200:
+                if response.json()["version"] != version:
+                    if sg.popup_yes_no("New version available: " + response.json()["version"] + ". Do you want to update?", title="To update") == "Yes":
+                        if download_both():
+                            subprocess.run([r"auto_updater_build_script.bat"])
+                            os.remove("obsidian_canvas_generator.py")
+                            os.remove("auto_updater_build_script.bat")
+                            os.remove("obsidian_canvas_generator.spec")
+                            sg.popup("Done")
+                            window.close()
+                        else:
+                            sg.popup("Web site does not exist or is not reachable")
+                        break
+                else:
+                    sg.popup("No new version available, actual: " + response.json()["version"], title="Updated")
+            else:
+                sg.popup("Web site does not exist or is not reachable\n" + response.status_code+"\n"+response.reason+"\n"+response.text)
+
         elif event == "Generate Canvas":
             file_path = values["-FILE-"]
             folder_path = values["-FOLDER-"]
@@ -91,12 +112,33 @@ if __name__ == "__main__":
     main()
 
 def download_source():
-    response = requests.get(
-        "https://raw.githubusercontent.com/Scavix/auto-updater/main/auto_updater_code.py")
+    response = requests.get("https://raw.githubusercontent.com/Scavix/links-to-obsidian-canvas/main/obsidian_canvas_generator.py")
     if response.status_code == 200:
-        f = open("auto_updater_code.py", "w")
+        f = open("obsidian_canvas_generator.py", "w")
         f.write(response.text)
         f.close()
         return True
     else:
+        return False
+    
+def download_build_script():
+    response = requests.get("https://raw.githubusercontent.com/Scavix/links-to-obsidian-canvas/main/auto_updater_build_script.bat")
+    if response.status_code == 200:
+        f = open("auto_updater_build_script.bat", "w")
+        f.write(response.text)
+        f.close()
+        return True
+    else:
+        return False
+    
+def download_both():
+    res1=download_source()
+    res2=download_build_script()
+    if res1 and res2:
+        return True
+    else:
+        if res1:
+            os.remove("obsidian_canvas_generator.py")
+        if res2:
+            os.remove("auto_updater_build_script.bat")
         return False
