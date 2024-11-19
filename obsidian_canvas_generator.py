@@ -10,7 +10,9 @@ def generate_canvas(file_path, output_path):
     try:
         with open(file_path, 'r') as file:
             links = [line.strip() for line in file.readlines() if line.strip()]
-
+            
+        total_links = len(links)
+        num_columns = math.ceil(math.sqrt(total_links))
         nodes = []
         x, y = 0, 0
         width, height = 540, 300
@@ -27,7 +29,7 @@ def generate_canvas(file_path, output_path):
                 "height": height
             }
             nodes.append(node)
-            if (i + 1) % 2 == 0:
+            if (i + 1) % num_columns == 0:
                 x = 0
                 y += height + padding
             else:
